@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 import { addContact } from "../../redux/contacts-operations";
 import s from "./ContactForm.module.css";
@@ -17,8 +18,19 @@ class ContactForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
+    const { name } = this.state;
+    const contacts = this.props.contacts;
+    if (
+      contacts.some(
+        (contact) => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      toast(`"Contact with name ${name} is already exist!"`);
+      this.reset();
+    } else {
+      this.props.onSubmit(this.state);
+      this.reset();
+    }
   };
 
   reset = () => {
